@@ -1,6 +1,6 @@
 import shutil
 import openpyxl
-import time
+import timeg
 import sys
 import os
 from selenium import webdriver
@@ -11,7 +11,6 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 import PySimpleGUI as sg
-from pathlib import Path
 
 
 

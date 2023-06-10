@@ -1,5 +1,5 @@
 # Ignore spec-file
-.spec
+SurveySenderKC.spec
 
 # ignore geckodriver
 /geckodriver.exe
