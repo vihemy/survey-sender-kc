@@ -1,6 +1,6 @@
 import shutil
 import openpyxl
-import timeg
+import time
 import sys
 import os
 from selenium import webdriver
