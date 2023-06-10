@@ -1,0 +1,5 @@
+# Ignore spec-file
+.spec
+
+# ignore geckodriver
+/geckodriver.exe
