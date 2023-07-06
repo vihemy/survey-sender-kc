@@ -11,7 +11,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 import PySimpleGUI as sg
-
+import phonenumbers
 
 
 #Inspiration = https://realpython.com/pysimplegui-python/ 
@@ -25,74 +25,35 @@ excel_file = ''
 first_row = 8
 first_col = 1
 url = 'https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1&test=1'
-earlierReceivers = "C:\Users\vhm\OneDrive - Kattegatcentret\Analyser & undersøgelser\Epinion og TA\Gæsteundersøgelse\2023\Tidligere modtagere af spørgeskema.xlsx"
 
 
 
 # ____________________________________ MAIN FUNCTIONS (CALLED FROM PYSIMPLEGUI)_________________________________________________
 
+def LoadPhoneNumbers(excel_file, first_row, first_col):
+    phone_numbers = ExtractPhoneNumbersFromExcel(excel_file, first_row, first_col)
+    parsed_phone_numbers = ParseNumbers(phone_numbers) # Parses numbers in to list of tuples containing national number and country code.
+    print("SAMLET ANTAL TELEFONNUMRE: " + str(len(parsed_phone_numbers)) + "\nTELEFONNUMRE (telefonnummer, landekode): \n"+ str(parsed_phone_numbers))
+    return parsed_phone_numbers
 
-
-def ExtractPhoneNumbers(excel_file, first_row, first_col):
-    # Sets workbook and sheet for openpyxl
-    wb = openpyxl.load_workbook(excel_file)
-    sheet = wb.active # gets active/first sheet-name of workbook
-    phone_numbers = [] # resets list
-    # loops through specified columns and rows.
-    for col in range(first_col, sheet.max_column+1):
-        for row in range(first_row, sheet.max_row+1):
-            cell = sheet.cell(row, col)
-            if cell.value and type(cell.value) == int:
-                phone_numbers.append(cell.value) # appends cell.value to phonenumbers if not null and if is int.
-    print("Antal telefonnnumre i excel-ark: " + str(len(phone_numbers)) + "\nTelefonnumre: "+ str(phone_numbers))
-    wb.close() # closes workbook
-    return phone_numbers
     
-    
-def SendSurveys(url, phone_numbers):
+def SendSurveys(url, parsed_phone_numbers):
     driver = InitializeDriver()
     OpenWebForm(driver, url)
     delay = 5 # delay for ClickButtonScripts
     sent_to = []
-    for phone_number in phone_numbers:
-        ClickButton(driver, '//input[@value="DAN"]', delay) # First input with attribute value set to 'DAN' https://selenium-python.readthedocs.io/locating-elements.html
-        FillTextField(driver, '//input[@id="_Q1_O1"]', phone_number)
+
+    for i in parsed_phone_numbers:
+        languageButtonSearchValue = GetLanguageButtonSearchValue(i)
+        ClickButton(driver, languageButtonSearchValue, delay)
+        FillTextField(driver, '//input[@id="_Q1_O1"]', i[0]
+                      )
         ScrollToBottom(driver)
         ClickButton(driver, '//input[@value="Send"]', delay)
         time.sleep(1) # needed for reload of page
-        sent_to.append(phone_number)
+        sent_to.append(i)
     PrintFinalReport(sent_to)
     driver.quit() # Quits the driver after loop is ended
-
-
-# def GetEarlierReceivers():
-#     wb = openpyxl.load_workbook(earlierReceivers)
-#     sheet = wb.active
-#     sent_to = []
-#     # loop through all cells, and append to sent_to if not null
-#     for row in sheet:
-#         for cell in row:
-#             if cell.value and type(cell.value) == int:
-#                 sent_to.append(cell.value) # appends cell.value to phonenumbers if not null and if is int.
-#     wb.close() # closes workbook
-#     return sent_to
-
-
-# def SendSurveys2(url, phone_numbers):
-#     driver = InitializeDriver()
-#     OpenWebForm(driver, url)
-#     delay = 5 # delay for ClickButtonScripts
-#     sent_to = []
-#     for phone_number in phone_numbers not in sent_to not in sent_to:
-#         ClickButton(driver, '//input[@value="DAN"]', delay) # First input with attribute value set to 'DAN' https://selenium-python.readthedocs.io/locating-elements.html
-#         FillTextField(driver, '//input[@id="_Q1_O1"]', phone_number)
-#         ScrollToBottom(driver)
-#         ClickButton(driver, '//input[@value="Send"]', delay)
-#         time.sleep(1) # needed for reload of page
-#         sent_to.append(phone_number)
-#     PrintFinalReport(sent_to)
-#     driver.quit() # Quits the driver after loop is ended
-
 
 def ClearSheet(excel_file, first_row, first_col):
     wb = openpyxl.load_workbook(excel_file)
@@ -106,8 +67,35 @@ def ClearSheet(excel_file, first_row, first_col):
     print("Excel-ark er ryddet")
 
 
-
 #_______________________________________ SUB FUNCTIONS (CALLED FROM  MAIN FUNCTIONS)__________________________________________
+
+def ExtractPhoneNumbersFromExcel(excel_file, first_row, first_col):
+    # Sets workbook and sheet for openpyxl
+    wb = openpyxl.load_workbook(excel_file)
+    sheet = wb.active # gets active/first sheet-name of workbook
+    phone_numbers = [] # resets list
+    # loops through specified columns and rows.
+    for col in range(first_col, sheet.max_column+1):
+        for row in range(first_row, sheet.max_row+1):
+            cell = sheet.cell(row, col)
+            if cell.value: #and type(cell.value) == int:
+                phone_numbers.append(str(cell.value)) # appends cell.value to phonenumbers - converts to string to have the plus-sign. (if saved as int, the plus-sign is removed, which makes it impossible for ParseNumbers to determine if countrycode)
+    wb.close() # closes workbook
+    return phone_numbers
+
+def ParseNumbers(phone_numbers):
+    # Parses phone_numbers into national number and country codesaved as tuples in parsed_numbers. Needs +-sign in front of country code. 
+    parsed_phone_numbers = []
+    phone_numbers_string = map(str, phone_numbers) # Makes sure that all numbers are converted to string to be used by phonenumbers.parse. (is converted in ExtractPhoneNumbersFromExcel also)
+
+    # loops through phonenumbers and parses them
+    for i in phone_numbers_string:
+        if '+' in i: # If country code (signified by use of +(!)).
+            parsed_number = phonenumbers.parse(i, None) # No need for second argument, as country code is present in i.)
+            parsed_phone_numbers.append((parsed_number.national_number, parsed_number.country_code)) # appends national number and country code as tuple to parsed_phone_numbers
+        else: # If no country code is present signified by lack of "+"
+            parsed_phone_numbers.append(((i), 45)) # if no country code is present, only national number is appended to parsed_phone_numbers.
+    return parsed_phone_numbers
 
 
 def InitializeDriver():
@@ -125,6 +113,24 @@ def InitializeDriver():
 def OpenWebForm(driver, url):
     driver.get(url) # Open the webform
     #driver.maximize_window() # send-button is obscured by smaller window sizes
+
+
+def GetLanguageButtonSearchValue(i):
+    searchValue = ''
+    if i[1] == 45: # if country code is 45 (Denmark)
+        searchValue = '//input[@value="DAN"]'
+    elif i[1] == 49 or 43 or 41: # if 49 = Germany, 43 = Austria, 41 = Switzerland
+        searchValue = '//input[@value="DEU"]'
+    elif i[1] != 45 or 49 or 43 or 41 : # if country code is not 45 (Denmark)
+        searchValue = '//input[@value="ENG"]'
+    return searchValue
+
+# def ChooseLanguage():
+
+# def DetermineAreaCode():
+    
+# def SelectAreaCodeFromDropdown():
+
 
 def ClickButton(driver, xpath, delay):
     try:
@@ -154,8 +160,6 @@ def PrintFinalReport(sent_to):
 #_________________________________________________________PYSIMPLEGUI_______________________________________________________
 
 
-
-
     # Create the PySimpleGUI layout
 layout = [
     [sg.Text('Excel fil sti: '), sg.Input(excel_file, key= '-FILEPATH-'), sg.FileBrowse()],
@@ -170,21 +174,19 @@ layout = [
 # Create the window with PySimpleGUI
 window = sg.Window('Survey Sender', layout)
 
-
 # Event loop to process events and update window
 while True:
     event, values = window.read()
     # Ends program
     if event == sg.WIN_CLOSED or event == "-EXIT-":
         break
-    # Calls CollectingPhoneNumbers when button Import is pressed
+    # Calls LoadPhoneNumbers when button Import is pressed
     elif event == "-IMPORT-":
         try:    
             excel_file = values['-FILEPATH-'] 
             first_row = int(values['-FIRSTROW-'])
             first_column = int(values['-FIRSTCOLUMN-'])
-            # sent_to = GetEarlierReceivers()
-            phone_numbers = ExtractPhoneNumbers(excel_file, first_row, first_column)
+            parsed_phone_numbers = LoadPhoneNumbers(excel_file, first_row, first_column)
         except PermissionError:
             print("Der er ikke adgang til excel-filen. Luk excel-filen og prøv igen.")  
         except Exception as e:
@@ -220,7 +222,7 @@ while True:
                 url = "https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1&test=1"
             elif values["-COMBO-"] == "Live link":
                 url = "https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1"
-            SendSurveys(url, phone_numbers)
+            SendSurveys(url, parsed_phone_numbers)
         except PermissionError:
             print("Der er ikke adgang til excel-filen. Luk excel-filen og prøv igen.")    
         except TypeError:
@@ -228,4 +230,4 @@ while True:
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info() # defines exception-information
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(f"An error occurred: {e}{exc_type}{fname}{exc_tb.tb_lineno}")
+            print(f"Der er opstået en fejl. Send et billede af følgende fejlmeddelelse til Victor: {e}{exc_type}{fname}{exc_tb.tb_lineno}")
