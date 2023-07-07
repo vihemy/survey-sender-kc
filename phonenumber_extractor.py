@@ -1,3 +1,4 @@
+#External libraries
 import openpyxl
 import phonenumbers
 
@@ -26,7 +27,7 @@ def parse_numbers(phone_numbers):
             parsed_number = phonenumbers.parse(i, None) # No need for second argument, as country code is present in i.)
             parsed_phone_numbers.append((parsed_number.national_number, parsed_number.country_code)) # appends national number and country code as tuple to parsed_phone_numbers
         else: # If no country code is present signified by lack of "+"
-            parsed_phone_numbers.append(((i), 45)) # if no country code is present, only national number is appended to parsed_phone_numbers.
+            parsed_phone_numbers.append((int((i)), 45)) # if no country code is present, only national number is appended to parsed_phone_numbers. (converts i from string to int, so it doesnt cause trouble in webform_filler.py )
     return parsed_phone_numbers
 
 def clear_sheet(excel_file, first_row, first_col):
