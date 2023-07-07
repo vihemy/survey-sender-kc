@@ -29,9 +29,19 @@ def parse_numbers(phone_numbers):
             parsed_phone_numbers.append(((i), 45)) # if no country code is present, only national number is appended to parsed_phone_numbers.
     return parsed_phone_numbers
 
+def clear_sheet(excel_file, first_row, first_col):
+    wb = openpyxl.load_workbook(excel_file)
+    sheet = wb.active
+    for col in range(first_col, sheet.max_column+1):
+        for row in range(first_row, sheet.max_row+1):
+            cell = sheet.cell(row, col)
+            cell.value = None
+    wb.save(excel_file)
+    wb.close()
+    print("Excel-ark er ryddet")
  #---------------------------------------------------------------------------------------------------------------------
 
-# CALLS ALL FUNCTIONS ABOVE
+# CALLS ALL FUNCTIONS ABOVE EXCEPT clear_sheet
 def import_and_parse_numbers(excel_file, first_row, first_col):
     phone_numbers = import_numbers_from_excel_as_list(excel_file, first_row, first_col)
     parsed_phone_numbers = parse_numbers(phone_numbers) # Parses numbers in to list of tuples containing national number and country code.

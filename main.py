@@ -57,16 +57,16 @@ url = 'https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1&test=1'
 #     print_sent_to_report(sent_to)
 #     driver.quit() # Quits the driver after loop is ended
 
-def ClearSheet(excel_file, first_row, first_col):
-    wb = openpyxl.load_workbook(excel_file)
-    sheet = wb.active
-    for col in range(first_col, sheet.max_column+1):
-        for row in range(first_row, sheet.max_row+1):
-            cell = sheet.cell(row, col)
-            cell.value = None
-    wb.save(excel_file)
-    wb.close()
-    print("Excel-ark er ryddet")
+# def clear_sheet(excel_file, first_row, first_col):
+#     wb = openpyxl.load_workbook(excel_file)
+#     sheet = wb.active
+#     for col in range(first_col, sheet.max_column+1):
+#         for row in range(first_row, sheet.max_row+1):
+#             cell = sheet.cell(row, col)
+#             cell.value = None
+#     wb.save(excel_file)
+#     wb.close()
+#     print("Excel-ark er ryddet")
 
 
 #_______________________________________ SUB FUNCTIONS (CALLED FROM  MAIN FUNCTIONS)__________________________________________
@@ -204,7 +204,7 @@ while True:
             # Display a confirmation prompt before executing the script
             confirm = sg.popup_yes_no("Er du sikker på, at du vil slette telefonnumrene fra excel-arket?", title="Bekræftelse")
             if confirm == "Yes":
-                ClearSheet(excel_file, first_row, first_column)
+                phonenumber_extractor.clear_sheet(excel_file, first_row, first_column)
                 sg.popup("Cellerne er blevet slettet.", title="Færdig")
         except PermissionError:
             print("Der er ikke adgang til excel-filen. Luk excel-filen og prøv igen.")          
