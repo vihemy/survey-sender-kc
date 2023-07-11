@@ -16,19 +16,22 @@ def import_numbers_from_excel_as_list(excel_file, first_row, first_col):
             if cell.value: # if cell.value is not empty
                 phone_number = PhoneNumber(cell.value) # creates PhoneNumber-object
                 phone_numbers.append(phone_number) # appends phone_number to list
-
     wb.close() # closes workbook
+
+    print_imported_numbers(phone_numbers)
     return phone_numbers
 
 def print_imported_numbers(phone_numbers):
+    print("----------------------------------")
     print("SAMLET ANTAL TELEFONNUMRE: " + str(len(phone_numbers)) + "\n")
     print ("NUMMER / LANDEKODE")
 
     for phone_number in phone_numbers:
-        print(phone_number.national_number(), phone_number.country_code())
+        print(str(phone_number.national_number()) + " / " + str(phone_number.country_code())) # converted to string to print
     return phone_numbers
 
 def print_sent_numbers(phone_numbers):
+    print("----------------------------------")
     print("SPØRGESKEMA SENDT TIL ANTAL TELEFONNUMRE: " + str(len(phone_numbers)) + "\n")
     print ("NUMMER / LANDEKODE")
 
@@ -46,11 +49,3 @@ def clear_sheet(excel_file, first_row, first_col):
     wb.save(excel_file)
     wb.close()
     print("Excel-ark er ryddet")
- #---------------------------------------------------------------------------------------------------------------------
-
-# CALLS ALL FUNCTIONS ABOVE EXCEPT clear_sheet
-def import_and_parse_numbers(excel_file, first_row, first_col):
-    phone_numbers = import_numbers_from_excel_as_list(excel_file, first_row, first_col)
-    # parsed_phone_numbers = parse_numbers(phone_numbers) # Parses numbers in to list of tuples containing national number and country code.
-    print_imported_numbers(phone_numbers)
-    return phone_numbers

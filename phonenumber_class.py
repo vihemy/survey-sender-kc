@@ -1,4 +1,4 @@
-import phonenumbers
+import phonenumbers # Library for parsing phone numbers
 
 class PhoneNumber:
     def __init__(self, number):
