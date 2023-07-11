@@ -55,7 +55,7 @@ while True:
             print(permission_error_string)  
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info() # defines exception-information
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]git
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(f"An error occurred: {e}{exc_type}{fname}{exc_tb.tb_lineno}")
             
     # Calls send_surveys-function with updated variables
