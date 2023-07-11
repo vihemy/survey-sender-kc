@@ -4,6 +4,7 @@ import os
 import PySimpleGUI as sg
 
 # Internal libraries
+from phonenumber_class import PhoneNumber
 import phonenumber_extractor
 import webform_filler
 
@@ -49,7 +50,7 @@ while True:
             excel_file = values['-FILEPATH-'] 
             first_row = int(values['-FIRSTROW-'])
             first_column = int(values['-FIRSTCOLUMN-'])
-            parsed_phone_numbers = phonenumber_extractor.import_and_parse_numbers(excel_file, first_row, first_column)
+            phone_numbers = phonenumber_extractor.import_and_parse_numbers(excel_file, first_row, first_column)
         except PermissionError:
             print("Der er ikke adgang til excel-filen. Luk excel-filen og prøv igen.")  
         except Exception as e:
@@ -86,7 +87,7 @@ while True:
                 url = "https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1&test=1"
             elif values["-COMBO-"] == "Live link":
                 url = "https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1"
-            webform_filler.send_surveys(url, parsed_phone_numbers)
+            webform_filler.send_surveys(url, phone_numbers)
         except PermissionError:
             print("Der er ikke adgang til excel-filen. Luk excel-filen og prøv igen.")    
         except TypeError:
