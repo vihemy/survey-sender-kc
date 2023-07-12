@@ -6,6 +6,7 @@ import PySimpleGUI as sg
 # Internal libraries
 import phonenumber_extractor
 import webform_filler
+import printer
 
 #Inspiration = https://realpython.com/pysimplegui-python/ 
 
@@ -19,8 +20,9 @@ first_row = 8
 first_column = 1
 #url = 'https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1&test=1' # TEST URL
 
-permission_error_string = "Der er ikke adgang til excel-filen. Luk excel-filen, hvis du har den åbent et andet sted på computeren og prøv igen."
-type_error_string = "Ingen data importeret. Vælg en excel-fil med gyldigt indhold og prøv igen."
+#_______________________________________________________ GREATING MESSAGE _______________________________________________________
+
+printer.print_greeting()
 
 #_________________________________________________________PYSIMPLEGUI_______________________________________________________
 
@@ -33,7 +35,9 @@ layout = [
     [sg.Button('Importer', key="-IMPORT-")],
     [sg.Output(size=(80,20), key="-OUTPUT-")],
     [sg.Text("Vælg link:"), sg.Combo(["Test link", "Live link"], key="-COMBO-")],
-    [sg.Button('Send', key="-SEND-"), sg.Button('Slet telefonnumre fra fil', key="-DELETE-"), sg.Button('Exit', key="-EXIT-")]
+    [sg.Button('Send', key="-SEND-"),
+     #sg.Button('Slet telefonnumre fra fil', key="-DELETE-"), # REMOVED BECAUSE OF SYNC-ISSUES WHEN EDITING FILE ON ONEDRIVE THROUGH SCRIPT
+     sg.Button('Exit', key="-EXIT-")]
 ]
 
 # Create the window with PySimpleGUI
@@ -51,27 +55,12 @@ while True:
             excel_file = values['-FILEPATH-'] 
             phone_numbers = phonenumber_extractor.import_numbers_from_excel_as_list(excel_file, first_row, first_column)
         except PermissionError:
-            print(permission_error_string)  
+            printer.print_permission_error_message()
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info() # defines exception-information
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(f"An error occurred: {e}{exc_type}{fname}{exc_tb.tb_lineno}")
             
-    # Calls send_surveys-function with updated variables
-    elif event == "-DELETE-":
-        try:
-            excel_file = values['-FILEPATH-'] 
-            # Display a confirmation prompt before executing the script
-            confirm = sg.popup_yes_no("Er du sikker på, at du vil slette telefonnumrene fra excel-arket?", title="Bekræftelse")
-            if confirm == "Yes":
-                phonenumber_extractor.clear_sheet(excel_file, first_row, first_column)
-                sg.popup("Cellerne er blevet slettet.", title="Færdig")
-        except PermissionError:
-            print(permission_error_string)          
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info() # defines exception-information
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(f"An error occurred: {e}{exc_type}{fname}{exc_tb.tb_lineno}")
 
     # Calls send_surveys-function with updated variables
     elif event == "-SEND-":
@@ -85,10 +74,27 @@ while True:
                 url = "https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1"
             webform_filler.send_surveys(url, phone_numbers)
         except PermissionError:
-            print(permission_error_string)    
+            printer.print_permission_error_message()
         except TypeError:
-            print(type_error_string)
+            printer.print_type_error_message()
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info() # defines exception-information
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(f"DER ER OPSTÅET EN FEJL. SEND ET BILLEDE AF SKÆRMEN OG FØLGENDE FEJLMEDDELELSE TIL VICTOR:\n{e}{exc_type}{fname}{exc_tb.tb_lineno}")
+
+
+    # # DELETES CONTENT OF EXCEL FILE
+    # elif event == "-DELETE-":
+    #     try:
+    #         excel_file = values['-FILEPATH-'] 
+    #         # Display a confirmation prompt before executing the script
+    #         confirm = sg.popup_yes_no("Er du sikker på, at du vil slette telefonnumrene fra excel-arket?", title="Bekræftelse")
+    #         if confirm == "Yes":
+    #             phonenumber_extractor.clear_sheet(excel_file, first_row, first_column)
+    #             sg.popup("Cellerne er blevet slettet.", title="Færdig")
+    #     except PermissionError:
+    #         printer.print_permission_error_message()      
+    #     except Exception as e:
+    #         exc_type, exc_obj, exc_tb = sys.exc_info() # defines exception-information
+    #         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+    #         print(f"An error occurred: {e}{exc_type}{fname}{exc_tb.tb_lineno}")
