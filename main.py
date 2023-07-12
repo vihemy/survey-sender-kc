@@ -20,9 +20,6 @@ first_row = 8
 first_column = 1
 #url = 'https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1&test=1' # TEST URL
 
-#_______________________________________________________ GREATING MESSAGE _______________________________________________________
-
-printer.print_greeting()
 
 #_________________________________________________________PYSIMPLEGUI_______________________________________________________
 
@@ -41,7 +38,8 @@ layout = [
 ]
 
 # Create the window with PySimpleGUI
-window = sg.Window('Survey Sender v.2', layout)
+window = sg.Window('Survey Sender v.2', layout, finalize=True) # finalize=True makes it possible to call follow function when window is opened
+printer.print_greeting()
 
 # Event loop to process events and update window
 while True:
@@ -60,7 +58,6 @@ while True:
             exc_type, exc_obj, exc_tb = sys.exc_info() # defines exception-information
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(f"An error occurred: {e}{exc_type}{fname}{exc_tb.tb_lineno}")
-            
 
     # Calls send_surveys-function with updated variables
     elif event == "-SEND-":
