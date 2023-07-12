@@ -14,7 +14,7 @@ def import_numbers_from_excel_as_list(excel_file, first_row, first_col):
     for col in range(first_col, sheet.max_column+1):
         for row in range(first_row, sheet.max_row+1):
             cell = sheet.cell(row, col)
-            if cell.value and type(cell.value) == int: # if cell.value is not empty and is an integer
+            if type(cell.value) == int: # if cell.value is not empty and is an integer
                 phone_number = PhoneNumber(cell.value) # creates PhoneNumber-object
                 phone_numbers.append(phone_number) # appends phone_number to list
     wb.close() # closes workbook
