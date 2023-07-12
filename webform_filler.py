@@ -44,7 +44,7 @@ def click_button(driver, xpath, delay):
         element_present = expected_conditions.presence_of_element_located((By.XPATH, xpath))
         WebDriverWait(driver, delay).until(element_present) # delays until element is present
     except TimeoutException:
-       print("Timed out waiting for page to load")
+       print("\nTimed out waiting for page to load")
     else:
         button_to_click = driver.find_element(By.XPATH, xpath)
         driver.execute_script("arguments[0].click();", button_to_click) # uses javascript to execute click. (Seleniums click function, needed to have button in view, which was problematic.)
@@ -62,9 +62,9 @@ def select_country_code_from_dropdown(driver, phone_number: PhoneNumber):
         desired_item = driver.find_element(By.XPATH, xpath_expression)
         desired_item.click()
     except NoSuchElementException:
-        print("Desired item not found in the dropdown.")
+        print("\nDesired item not found in the dropdown.")
     except Exception as e:
-        print(f"An error occurred while selecting the item: {e}")
+        print(f"\nAn error occurred while selecting the item: {e}")
 
 def insert_number_in_text_field(driver, xpath, phone_number):
     # Find the text field for phone number and fill it with the phone number
@@ -75,8 +75,19 @@ def insert_number_in_text_field(driver, xpath, phone_number):
 def scroll_to_bottom(driver):
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") # scroll to the bottom of screen
 
-def print_report(sent_to):
+def print_report(phone_numbers, sent_to):
+
+    if len(phone_numbers) > len(sent_to): # if not all numbers were sent
+        print("----------------------------------")
+        print(f"\n{len(phone_numbers) - len(sent_to)} nUMRE BLEV IKKE SENDT. FØLGENDE NUMRE ER DOG SENDT:")
+
+    if len(phone_numbers) == len(sent_to): # if all numbers were sent
+        print("----------------------------------")
+        print("\nALLE NUMRE BLEV SENDT")    
+        
+    
     phonenumber_extractor.print_sent_numbers(sent_to)
+
 
 #----------------------------------------------------------------------------------------------------
 
@@ -88,24 +99,33 @@ def send_surveys(url, phone_numbers: list):
     sent_to = []
 
     for phone_number in phone_numbers:
-        # Choose one of three languages
-        language_button_xpath = pick_language_button_xpath(phone_number) # passes in second item in tuple (country code)
-        click_button(driver, language_button_xpath, delay)
+        try:
+            # Choose one of three languages
+            language_button_xpath = pick_language_button_xpath(phone_number) # uses in survey_language
+            click_button(driver, language_button_xpath, delay)
 
-        #Select areacode
-        select_country_code_from_dropdown(driver, phone_number) # passes in second item in tuple (country code)
-        #Insert phone number
-        insert_number_in_text_field(driver, '//input[@id="_Q1_O1"]', phone_number) # passes in first item in tuple (phone number)
+            #Select areacode
+            select_country_code_from_dropdown(driver, phone_number) # uses country code
 
-        #Presss send
-        scroll_to_bottom(driver)
-        click_button(driver, '//input[@value="Send"]', delay)
+            #Insert phone number
+            insert_number_in_text_field(driver, '//input[@id="_Q1_O1"]', phone_number) # uses national_number
 
-        #Add to sent_to list
-        sent_to.append(phone_number)
+            #Presss send
+            scroll_to_bottom(driver)
+            click_button(driver, '//input[@value="Send"]', delay)
+            #Add to sent_to list
+            sent_to.append(phone_number)
 
-        # needed for reload of page
-        time.sleep(1)
+            # needed for reload of page
+            time.sleep(1)
+            
+        except TimeoutException:
+            print(f"\nSiden til sending af nummer: {phone_number.number()} har brugt for lang tid på at laode. Fortsætter til næste nummer")
+            continue
+                
+        except Exception as e:
+            print(f"\nFølgende fejl er opstået, og har afbrudt sending af spørgeskemaer: {e}")
+            break
 
-    print_report(sent_to)
-    driver.quit() # Quits the driver after loop is ended
+    print_report(phone_numbers, sent_to)
+    driver.quit() 

@@ -4,7 +4,6 @@ import os
 import PySimpleGUI as sg
 
 # Internal libraries
-from phonenumber_class import PhoneNumber
 import phonenumber_extractor
 import webform_filler
 

@@ -23,21 +23,18 @@ def import_numbers_from_excel_as_list(excel_file, first_row, first_col):
 
 def print_imported_numbers(phone_numbers):
     print("----------------------------------")
-    print("SAMLET ANTAL TELEFONNUMRE: " + str(len(phone_numbers)) + "\n")
-    print ("NUMMER / LANDEKODE")
-
-    for phone_number in phone_numbers:
-        print(str(phone_number.national_number()) + " / " + str(phone_number.country_code())) # converted to string to print
-    return phone_numbers
+    print("ANTAL IMPORTEDE TELEFONNUMRE : " + str(len(phone_numbers)) + "\n")
+    print_list(phone_numbers)
 
 def print_sent_numbers(phone_numbers):
     print("----------------------------------")
-    print("SPØRGESKEMA SENDT TIL ANTAL TELEFONNUMRE: " + str(len(phone_numbers)) + "\n")
-    print ("NUMMER / LANDEKODE")
+    print("SENDT TIL ANTAL TELEFONNUMRE: " + str(len(phone_numbers)) + "\n")
+    print_list(phone_numbers)
 
-    for phone_number in phone_numbers:
-        print(phone_number.national_number(), phone_number.country_code())
-    return phone_numbers
+def print_list(phone_numbers):
+    print ("INDEX - TLF.NUMMER")
+    for i, phone_number in enumerate(phone_numbers): # uses enumerate to get index of iteration
+        print(str(i+1) + " - " + str(phone_number.number_as_int())) # converted to string to print
 
 def clear_sheet(excel_file, first_row, first_col):
     wb = openpyxl.load_workbook(excel_file)

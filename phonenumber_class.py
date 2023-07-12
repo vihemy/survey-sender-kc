@@ -4,6 +4,10 @@ class PhoneNumber:
     def __init__(self, number):
         self.number = number
 
+    def number_as_int(self):
+        number_as_int = int(self.number)
+        return number_as_int
+
     def national_number(self):
         if '+' in self.number: # If country code is noted (signified by use of +), country code is stripped, leaving only national number - OBS! THIS IS STRING, NOT INT! PLUS-SIGN CAN NOT BE DETECTED IN INT!
             parsed_number = phonenumbers.parse(self.number, None) # No need for second argument, as country code is present in i.)
