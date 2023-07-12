@@ -81,11 +81,10 @@ def print_report(phone_numbers, sent_to):
         printer.print_not_all_sent(phone_numbers, sent_to)
 
     if len(phone_numbers) == len(sent_to): # if all numbers were sent
-        printer.print_all_sent()
-        
-    printer.print_sent_numbers(sent_to)
-    print("Husk at slette telefonnumrene fra excel-arket :)")
+        printer.print_all_sent(len(sent_to))
 
+    else: # default message
+        printer.print_all_sent(len(sent_to))
 
 #----------------------------------------------------------------------------------------------------
 
