@@ -7,12 +7,11 @@ def print_greeting():
 
 def print_imported_numbers(phone_numbers):
     print("----------------------------------")
-    print("ANTAL IMPORTEDE TELEFONNUMRE : " + str(len(phone_numbers)) + "\n")
+    print("ANTAL IMPORTEDE TELEFONNUMRE: " + str(len(phone_numbers)) + "\n")
     print_list(phone_numbers)
 
 def print_sent_numbers(phone_numbers):
-    print("----------------------------------")
-    print("SENDT TIL ANTAL TELEFONNUMRE: " + str(len(phone_numbers)) + "\n")
+    print("Sendt til antal numre: " + str(len(phone_numbers)) + "\n")
     print_list(phone_numbers)
 
 def print_list(phone_numbers):
@@ -20,16 +19,16 @@ def print_list(phone_numbers):
     for i, phone_number in enumerate(phone_numbers): # uses enumerate to get index of iteration
         print(str(i+1) + " - " + str(phone_number.number_as_int())) # converted to string to print
 
-def print_all_sent():
+def print_all_sent(sent_to_count):
     print("----------------------------------")
-    print("ALLE NUMRE BLEV SENDT")
-    print("\nHUSK AT SLETTE NUMRENE FRA EXCEL-ARKET")
+    print(f"DER SENDT TIL ALLE {sent_to_count} NUMRE")
+    print("\nHusk at slette telefonnumrene fra excel-arket, så det er klar til i morgen :)")
 
 def print_not_all_sent(phone_numbers, sent_to):
     print("----------------------------------")
     print(f"{len(phone_numbers) - len(sent_to)} NUMRE BLEV IKKE SENDT. FØLGENDE NUMRE ER DOG SENDT:")
     print_list(sent_to)
-    print("SLET OVERSTÅENDE NUMRE FRA EXCEL-ARKET OG PRØV IGEN")
+    print("Slet overstående numre fra excel-arket og prøv igen")
 
 #_______________________________________________________________________________________________
 
