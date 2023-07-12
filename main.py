@@ -10,16 +10,22 @@ import printer
 
 #Inspiration = https://realpython.com/pysimplegui-python/ 
 
-# Define the Excel file path and sheet name
-# folder_directory = Path( __file__ ).parent.absolute() # gets current folder of script
-# file_directory = folder_directory.joinpath("Liste til telefonnumre - Tilfredshedsundersøgelse.xlsx") # gets file and joins it with folder path
-# excel_file = file_directory
 
-excel_file = ''
+def default_excel_path():
+    # Get the absolute path of this script
+    script_path = os.path.realpath(__file__) 
+    # Get the script directory
+    script_dir = os.path.dirname(script_path) 
+    # Joins script_dir with excel file name
+    excel_file = os.path.join(script_dir, "Liste til telefonnumre - Tilfredshedsundersøgelse.xlsx")
+    return excel_file
+
+#_______________________ INITIALIZE VARIABLES _______________________
+
+# Define the Excel file path and sheet name
+excel_file = default_excel_path()
 first_row = 8
 first_column = 1
-#url = 'https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1&test=1' # TEST URL
-
 
 #_________________________________________________________PYSIMPLEGUI_______________________________________________________
 
