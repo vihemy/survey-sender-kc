@@ -9,10 +9,13 @@ class PhoneNumber:
         return number_as_int
 
     def national_number(self):
-        if '+' in self.number: # If country code is noted (signified by use of +), country code is stripped, leaving only national number - OBS! THIS IS STRING, NOT INT! PLUS-SIGN CAN NOT BE DETECTED IN INT!
+        # If country code is noted (signified by use of +), country code is stripped, leaving only national number - OBS! THIS IS STRING, NOT INT! PLUS-SIGN CAN NOT BE DETECTED IN INT!
+        if '+' in self.number: 
             parsed_number = phonenumbers.parse(self.number, None) # No need for second argument, as country code is present in i.)
             national_number = parsed_number.national_number
-        else: # If no country code is present (signified by lack of "+") all of self.number is national number
+
+        # If no country code is present (signified by lack of "+") all of self.number is national number
+        else: 
             national_number = int(self.number)
         return national_number
     
