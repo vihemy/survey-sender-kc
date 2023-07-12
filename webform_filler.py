@@ -12,7 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 #Internal libraries
 from phonenumber_class import PhoneNumber
-import phonenumber_extractor
+import printer
 
 def initialize_driver():
 # Path to the geckodriver executable
@@ -78,15 +78,13 @@ def scroll_to_bottom(driver):
 def print_report(phone_numbers, sent_to):
 
     if len(phone_numbers) > len(sent_to): # if not all numbers were sent
-        print("----------------------------------")
-        print(f"\n{len(phone_numbers) - len(sent_to)} nUMRE BLEV IKKE SENDT. FØLGENDE NUMRE ER DOG SENDT:")
+        printer.print_not_all_sent(phone_numbers, sent_to)
 
     if len(phone_numbers) == len(sent_to): # if all numbers were sent
-        print("----------------------------------")
-        print("\nALLE NUMRE BLEV SENDT")    
+        printer.print_all_sent()
         
-    
-    phonenumber_extractor.print_sent_numbers(sent_to)
+    printer.print_sent_numbers(sent_to)
+    print("Husk at slette telefonnumrene fra excel-arket :)")
 
 
 #----------------------------------------------------------------------------------------------------
