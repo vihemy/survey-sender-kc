@@ -121,7 +121,7 @@ def send_surveys(url, phone_numbers: list):
             continue
                 
         except Exception as e:
-            print(f"\nFølgende fejl er opstået, og har afbrudt sending af spørgeskemaer: {e}")
+            print(f"\nUnder afsending af et spørgeskema er følgende fejl er opstået, og har afbrudt sending af spørgeskemaer: {e}")
             break
 
     print_report(phone_numbers, sent_to)
