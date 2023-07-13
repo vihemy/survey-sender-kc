@@ -16,7 +16,7 @@ def print_sent_numbers(phone_numbers):
 
 
 def print_list(phone_numbers):
-    print("INDEX\tTLF.NUMMER\tLAND\tLANDEKODE")
+    print("INDEX\tTLF.\tLAND\tLANDEKODE")
     # uses enumerate to get index of iteration
     for i, phone_number in enumerate(phone_numbers):
         # converted to string to print
