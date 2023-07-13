@@ -1,4 +1,5 @@
 import phonenumbers  # Library for parsing phone numbers
+from phonenumbers import geocoder  # Library for getting country from phone number
 
 
 class PhoneNumber:
@@ -38,3 +39,14 @@ class PhoneNumber:
         else:
             survey_language = 'ENG'
         return survey_language
+
+    def country_name(self):
+        if '+' in self.number:
+            # Gets country name from number
+            parsed_number = phonenumbers.parse(self.number, None)
+            country_name = geocoder.country_name_for_number(
+                parsed_number, "en")
+        # If no country code is present (signified by lack of "+")
+        else:
+            country_name = "Denmark"
+        return country_name
