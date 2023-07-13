@@ -1,5 +1,6 @@
 import phonenumbers  # Library for parsing phone numbers
 from phonenumbers import geocoder  # Library for getting country from phone number
+from phonenumbers import COUNTRY_CODE_TO_REGION_CODE  # Dictionary for getting country code from country
 
 
 class PhoneNumber:
@@ -39,6 +40,10 @@ class PhoneNumber:
         else:
             survey_language = 'ENG'
         return survey_language
+    
+    def region_code(self):
+        region_code = COUNTRY_CODE_TO_REGION_CODE[self.country_code()]
+        return region_code
 
     def country_name(self):
         if '+' in self.number:
