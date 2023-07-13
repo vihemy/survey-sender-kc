@@ -39,9 +39,7 @@ layout = [
     [sg.Button('Importer', key="-IMPORT-")],
     [sg.Output(size=(80,20), key="-OUTPUT-")],
     [sg.Text("Vælg link:"), sg.Combo(["Test link", "Live link"], key="-COMBO-")],
-    [sg.Button('Send', key="-SEND-"),
-     #sg.Button('Slet telefonnumre fra fil', key="-DELETE-"), # REMOVED BECAUSE OF SYNC-ISSUES WHEN EDITING FILE ON ONEDRIVE THROUGH SCRIPT
-     sg.Button('Exit', key="-EXIT-")]
+    [sg.Button('Send', key="-SEND-"), sg.Button('Exit', key="-EXIT-")]
 ]
 
 # Create the window with PySimpleGUI
@@ -85,20 +83,3 @@ while True:
             exc_type, exc_obj, exc_tb = sys.exc_info() # defines exception-information
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(f"DER ER OPSTÅET EN FEJL. SEND ET BILLEDE AF SKÆRMEN OG FØLGENDE FEJLMEDDELELSE TIL VICTOR:\n{e}{exc_type}{fname}{exc_tb.tb_lineno}")
-
-
-    # # DELETES CONTENT OF EXCEL FILE
-    # elif event == "-DELETE-":
-    #     try:
-    #         excel_file = values['-FILEPATH-'] 
-    #         # Display a confirmation prompt before executing the script
-    #         confirm = sg.popup_yes_no("Er du sikker på, at du vil slette telefonnumrene fra excel-arket?", title="Bekræftelse")
-    #         if confirm == "Yes":
-    #             phonenumber_extractor.clear_sheet(excel_file, first_row, first_column)
-    #             sg.popup("Cellerne er blevet slettet.", title="Færdig")
-    #     except PermissionError:
-    #         printer.print_permission_error_message()      
-    #     except Exception as e:
-    #         exc_type, exc_obj, exc_tb = sys.exc_info() # defines exception-information
-    #         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-    #         print(f"An error occurred: {e}{exc_type}{fname}{exc_tb.tb_lineno}")
