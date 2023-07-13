@@ -10,14 +10,15 @@ import printer
 
 #Inspiration = https://realpython.com/pysimplegui-python/ 
 
-
 def default_excel_path():
-    # Get the absolute path of this script
-    script_path = os.path.realpath(__file__) 
-    # Get the script directory
-    script_dir = os.path.dirname(script_path) 
-    # Joins script_dir with excel file name
-    excel_file = os.path.join(script_dir, "Liste til telefonnumre - Tilfredshedsundersøgelse.xlsx")
+    if getattr(sys, 'frozen', False):
+    # If the application is run as a -onefile (pyinstaller) the path is different than if run as a script
+        application_directory = os.path.dirname(sys.executable)
+    # If not the application is run as onefile (pyinstaller) the path is set to the directory of this script
+    else:
+        application_directory = os.path.dirname(os.path.abspath(__file__))
+
+    excel_file = os.path.join(application_directory, "Liste til telefonnumre - Tilfredshedsundersøgelse.xlsx")
     return excel_file
 
 #_______________________ INITIALIZE VARIABLES _______________________
@@ -32,7 +33,7 @@ first_column = 1
 #Choose Theme
 sg.theme('BlueMono') # theme-overview: https://www.geeksforgeeks.org/themes-in-pysimplegui/
 
-    # Create the PySimpleGUI layout
+# Create the PySimpleGUI layout
 layout = [
     [sg.Text('Excel fil sti: '), sg.Input(excel_file, key= '-FILEPATH-'), sg.FileBrowse()],
     [sg.Button('Importer', key="-IMPORT-")],
