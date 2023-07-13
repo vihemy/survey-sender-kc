@@ -16,11 +16,11 @@ def print_sent_numbers(phone_numbers):
 
 
 def print_list(phone_numbers):
-    print("INDEX - TLF.NUMMER")
+    print("INDEX\tTLF.NUMMER\tLAND\tLANDEKODE")
     # uses enumerate to get index of iteration
     for i, phone_number in enumerate(phone_numbers):
         # converted to string to print
-        print(str(i+1) + " - " + str(phone_number.number_as_int()))
+        print(str(i+1), '\t', str(phone_number.national_number()), '\t', str(phone_number.country_name()), '\t', str(phone_number.country_code()))
 
 
 def print_all_sent(sent_to_count):
