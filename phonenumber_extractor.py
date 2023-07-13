@@ -10,6 +10,8 @@ import printer
 def check_if_cell_content_is_valid(cell):
     if check_if_cell_is_empty(cell):
         return False
+    elif check_if_cell_contains_less_than_8_digits(cell):
+        return False
     elif check_if_cell_contains_inappropriate_characters(cell):
         return False
     else:
@@ -18,6 +20,10 @@ def check_if_cell_content_is_valid(cell):
 
 def check_if_cell_is_empty(cell):
     return bool(cell.value == None)
+
+
+def check_if_cell_contains_less_than_8_digits(cell):
+    return bool(len(cell.value) < 8)
 
 
 def check_if_cell_contains_inappropriate_characters(cell):
