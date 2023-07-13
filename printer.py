@@ -20,7 +20,7 @@ def print_list(phone_numbers):
     # uses enumerate to get index of iteration
     for i, phone_number in enumerate(phone_numbers):
         # converted to string to print
-        print(str(i+1), '\t', str(phone_number.national_number()), '\t', str(phone_number.country_name()), '\t', str(phone_number.country_code()))
+        print(str(i+1), '\t', str(phone_number.national_number()), '\t', str(phone_number.region_code()), '\t', str(phone_number.country_code()))
 
 
 def print_all_sent(sent_to_count):
