@@ -1,6 +1,6 @@
-import phonenumbers  # Library for parsing phone numbers
-from phonenumbers import geocoder  # Library for getting country from phone number
-# Dictionary for getting country code from country
+#External modules
+import phonenumbers
+from phonenumbers import geocoder
 from phonenumbers import COUNTRY_CODE_TO_REGION_CODE
 
 
