@@ -1,18 +1,44 @@
-#External modules
+# External modules
 import phonenumbers
 from phonenumbers import geocoder
 from phonenumbers import COUNTRY_CODE_TO_REGION_CODE
 
 
 class PhoneNumber:
+    '''
+    Class to handle phone numbers and their characeristics
+
+    Attributes
+    ----------
+    number : str
+        Phone number (e.g. +4512345678)
+
+    Methods
+    -------
+    number_as_int()
+        Returns phone number as int (e.g. 4512345678)
+    national_number()
+        Returns national number as int (e.g. 12345678)
+    country_code()
+        Returns country code as int (e.g. 45)
+    survey_language()
+        Returns survey language as str (e.g. 'DAN')
+    region_code()
+        Returns region code(s) as tuple of str (e.g. 'DK')
+    country_name()
+        Returns country name as str (e.g. 'Denmark')
+    '''
+
     def __init__(self, number):
         self.number = number
 
     def number_as_int(self):
+        """Return phone number as int (e.g. 4512345678)"""
         number_as_int = int(self.number)
         return number_as_int
 
     def national_number(self):
+        """Return national number as int (e.g. 12345678)"""
         # If country code is noted (signified by use of +), country code is stripped, leaving only national number - OBS! THIS IS STRING, NOT INT! PLUS-SIGN CAN NOT BE DETECTED IN INT!
         if '+' in self.number:
             # No need for second argument, as country code is present in i.)
@@ -26,6 +52,7 @@ class PhoneNumber:
 
     # Gets country code from number. If no country code is present, country code is set to 45 (Denmark)
     def country_code(self):
+        """Return country code as int (e.g. 45)"""
         if '+' in self.number:
             parsed_number = phonenumbers.parse(self.number, None)
             country_code = parsed_number.country_code
@@ -34,6 +61,7 @@ class PhoneNumber:
         return country_code
 
     def survey_language(self):  # Gets survey language from country code
+        """Return survey language as str (e.g. 'DAN')"""
         if self.country_code() == 45:
             survey_language = 'DAN'
         elif self.country_code() == 49 or self.country_code() == 43 or self.country_code() == 41:
@@ -43,10 +71,12 @@ class PhoneNumber:
         return survey_language
 
     def region_code(self):
+        """Return region code(s) as tuple of str (e.g. 'DK')"""
         region_code = COUNTRY_CODE_TO_REGION_CODE[self.country_code()]
         return region_code
 
     def country_name(self):
+        """Return country name as str (e.g. 'Denmark')"""
         if '+' in self.number:
             # Gets country name from number
             parsed_number = phonenumbers.parse(self.number, None)
