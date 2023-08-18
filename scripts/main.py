@@ -12,6 +12,7 @@ import printer
 
 
 def default_excel_path():
+    """Return default path to excel file as str"""
     if getattr(sys, 'frozen', False):
         # If the application is run as a -onefile (pyinstaller) the path is different than if run as a script
         application_directory = os.path.dirname(sys.executable)
