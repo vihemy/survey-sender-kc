@@ -1,6 +1,6 @@
 
 def print_greeting():
-    greeting_string = "Velkommen til Survey Sender v.2.0.\n\nFor at sende spørgeskemaer:\n1. Vælg excel-filen med telefonnumre fra OneDrive-mappen\n2. Vælg link-type (vælg live link, med mindre du tester sending til dit eget nummer)\n3. Tryk på Send-knappen\n4. Vent på, at programmet har kørt færdig (Hold firefox-vinduet åbent mens det kører)\n5. Åbn excel-filen og slet telefonnumrene der er blevet sendt til. \n\nHvis du har spørgsmål, så kontakt Victor på 52 13 72 34. Hvis du oplever fejl, så send et billede af fejlmeddelelsen og så meget af den øvrige skærm som muligt til Victor på teams eller mail vhm@kattegatcentret.dk"
+    greeting_string = "Velkommen til Survey Sender v.2.5.\n\nFor at sende spørgeskemaer:\n1. Vælg excel-filen med telefonnumre fra OneDrive-mappen\n2. Vælg link-type (vælg live link, med mindre du tester sending til dit eget nummer)\n3. Tryk på Send-knappen\n4. Vent på, at programmet har kørt færdig (Hold firefox-vinduet åbent mens det kører)\n5. Åbn excel-filen og slet telefonnumrene der er blevet sendt til. \n\nHvis du har spørgsmål, så kontakt Victor på 52 13 72 34. Hvis du oplever fejl, så send et billede af fejlmeddelelsen og så meget af den øvrige skærm som muligt til Victor på teams eller mail vhm@kattegatcentret.dk"
     print(greeting_string)
 
 
