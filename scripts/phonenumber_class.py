@@ -30,7 +30,13 @@ class PhoneNumber:
     '''
 
     def __init__(self, number):
-        self.number = number
+        self.number = self._replace_00_with_plus(number)
+
+    def _replace_00_with_plus(self, number):
+        """Replace any leading '00' in with '+' and return number."""
+        if number[0:2] == "00":
+            number = "+" + number[2:]
+        return number
 
     def number_as_int(self):
         """Return phone number as int (e.g. 4512345678)"""
