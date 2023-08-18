@@ -134,15 +134,15 @@ def send_surveys(url, phone_numbers: list):
             # needed for reload of page
             time.sleep(1)
 
-        except TimeoutException:
-            print(
-                f"\nSiden til sending af nummer: {phone_number.number()} har brugt for lang tid på at laode. Fortsætter til næste nummer")
-            continue
+        # except TimeoutException:
+        #     print(
+        #         f"\nSiden til sending af nummer: {phone_number.number()} har brugt for lang tid på at loade . Fortsætter til næste nummer")
+        #     continue
 
         except Exception as e:
             print(
-                f"\nUnder afsending af et spørgeskema er følgende fejl er opstået, og har afbrudt sending af spørgeskemaer: {e}")
-            break
+                f"\nVed sending til nummer: {phone_number.number()} er følgende fejl er opstået {e} \n Fortsætter til næste nummer")
+            continue
 
     print_report(phone_numbers, sent_to)
     driver.quit()
