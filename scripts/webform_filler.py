@@ -6,7 +6,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -78,16 +77,6 @@ def fill_text_field(driver, xpath, phone_number):
     text_field.send_keys(phone_number.national_number())
 
 
-def scroll_to_bottom(driver):
-    """Scroll to the bottom of the screen, to make sure proper element is in view (uses javascript)"""
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-
-def scroll_to_element(driver, element):
-    """Scroll to element, to make sure it'n in view (uses javascript and scrollIntoView in stead of Seleniums moveToElement, that changes curser position)"""
-    driver.execute_script("arguments[0].scrollIntoView();", element)
-
-
 def print_report(phone_numbers, sent_to):
     """Print report of sendings to user."""
     if len(phone_numbers) > len(sent_to):  # if not all numbers were sent
@@ -102,12 +91,13 @@ def print_report(phone_numbers, sent_to):
 def send_surveys(url, phone_numbers: list):
     """Send surveys to phone numbers in list"""
     driver = initialize_driver()
-    open_webform(driver, url)
     delay = 5  # delay for click_buttonScripts
     sent_to = []
 
     for phone_number in phone_numbers:
         try:
+            open_webform(driver, url)
+
             # Choose one of three languages
             language_button_xpath = pick_language_button_xpath(phone_number)
             click_button(driver, language_button_xpath, delay)
