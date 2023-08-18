@@ -46,46 +46,27 @@ def pick_language_button_xpath(phone_number: PhoneNumber):
 
 
 def click_button(driver, xpath, delay):
-    """Click button based on xpath"""
+    """Click a button based on given xpath using executive_script (javascript)"""
     try:
-        element_present = expected_conditions.presence_of_element_located(
-            (By.XPATH, xpath))
-        # delays until element is present
-        WebDriverWait(driver, delay).until(element_present)
+        WebDriverWait(driver, delay).until(
+            expected_conditions.presence_of_element_located((By.XPATH, xpath))
+        )
     except TimeoutException:
-        print("\nTimed out waiting for page to load")
+        print("Page load timed out")
     else:
         button_to_click = driver.find_element(By.XPATH, xpath)
-        # uses javascript to execute click. (Seleniums click function, needed to have button in view, which was problematic.)
         driver.execute_script("arguments[0].click();", button_to_click)
 
 
 def select_country_code_from_dropdown(driver, phone_number: PhoneNumber):
-    """Find and select country_code on dropdown."""
-    # (does not use Selenium.Select due to custom dropdown)
-    dropdown = driver.find_element(By.CLASS_NAME, "cc-picker ")
-
-    # Make sure element is visible
-    scroll_to_element(driver, dropdown)
-
-    # Wait until dropwdown is visible and clicks to open it
-    WebDriverWait(driver, 5000).until(
-        expected_conditions.element_to_be_clickable((dropdown))).click()
-
-    # creates xpath expression to search for desired item in the dropdown
-    xpath_expression = f'//span[@class="cc-picker-code" and text()="{phone_number.country_code()}"]'
-
-    # find the desired item in the dropdown
-    try:
-        desired_item = driver.find_element(By.XPATH, xpath_expression)
-        desired_item.click()
-    except NoSuchElementException:
-        print("\nDesired item not found in the dropdown.")
-    except Exception as e:
-        print(f"\nAn error occurred while selecting the item: {e}")
+    """Open dropdown, find dropdown-item with country_code, select item from."""
+    dropdown_xpath = "//div[@class='cc-picker cc-picker-code-select-enabled']"
+    click_button(driver, dropdown_xpath, 5)
+    item_xpath = f'//span[@class="cc-picker-code" and text()="{phone_number.country_code()}"]'
+    click_button(driver, item_xpath, 5)
 
 
-def insert_number_in_text_field(driver, xpath, phone_number):
+def fill_text_field(driver, xpath, phone_number):
     """Find text field and insert national number."""
     text_field = driver.find_element(By.XPATH, xpath)
     # Waits x secs if element is not yet visible
@@ -128,31 +109,23 @@ def send_surveys(url, phone_numbers: list):
     for phone_number in phone_numbers:
         try:
             # Choose one of three languages
-            language_button_xpath = pick_language_button_xpath(
-                phone_number)  # uses in survey_language
+            language_button_xpath = pick_language_button_xpath(phone_number)
             click_button(driver, language_button_xpath, delay)
 
             # Select areacode
-            select_country_code_from_dropdown(
-                driver, phone_number)  # uses country code
+            select_country_code_from_dropdown(driver, phone_number)
 
             # Insert phone number
-            insert_number_in_text_field(
-                driver, '//input[@id="_Q1_O1"]', phone_number)  # uses national_number
+            fill_text_field(driver, '//input[@id="_Q1_O1"]', phone_number)
 
             # Presss send
-            scroll_to_bottom(driver)
             click_button(driver, '//input[@value="Send"]', delay)
+
             # Add to sent_to list
             sent_to.append(phone_number)
 
             # needed for reload of page
             time.sleep(1)
-
-        # except TimeoutException:
-        #     print(
-        #         f"\nSiden til sending af nummer: {phone_number.number()} har brugt for lang tid på at loade . Fortsætter til næste nummer")
-        #     continue
 
         except Exception as e:
             print(
