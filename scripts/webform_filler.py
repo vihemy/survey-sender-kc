@@ -63,9 +63,15 @@ def click_button(driver, xpath, delay):
 def select_country_code_from_dropdown(driver, phone_number: PhoneNumber):
     """Find and select country_code on dropdown."""
     # (does not use Selenium.Select due to custom dropdown)
-    dropdown = driver.find_element(By.CLASS_NAME, "cc-picker")
-    # Click dropwdown to expand the options
-    dropdown.click()
+    dropdown = driver.find_element(By.CLASS_NAME, "cc-picker ")
+
+    # Make sure element is visible
+    scroll_to_element(driver, dropdown)
+
+    # Wait until dropwdown is visible and clicks to open it
+    WebDriverWait(driver, 5000).until(
+        expected_conditions.element_to_be_clickable((dropdown))).click()
+
     # creates xpath expression to search for desired item in the dropdown
     xpath_expression = f'//span[@class="cc-picker-code" and text()="{phone_number.country_code()}"]'
 
@@ -82,7 +88,11 @@ def select_country_code_from_dropdown(driver, phone_number: PhoneNumber):
 def insert_number_in_text_field(driver, xpath, phone_number):
     """Find text field and insert national number."""
     text_field = driver.find_element(By.XPATH, xpath)
-    text_field.clear()  # clear in case of previous input
+    # Waits x secs if element is not yet visible
+    WebDriverWait(driver, 3000).until(
+        expected_conditions.element_to_be_clickable((text_field)))
+    # clear in case of previous input
+    text_field.clear()
     # send_keys is Seleniums equivalent of typing in the text field
     text_field.send_keys(phone_number.national_number())
 
@@ -90,6 +100,11 @@ def insert_number_in_text_field(driver, xpath, phone_number):
 def scroll_to_bottom(driver):
     """Scroll to the bottom of the screen, to make sure proper element is in view (uses javascript)"""
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+
+def scroll_to_element(driver, element):
+    """Scroll to element, to make sure it'n in view (uses javascript and scrollIntoView in stead of Seleniums moveToElement, that changes curser position)"""
+    driver.execute_script("arguments[0].scrollIntoView();", element)
 
 
 def print_report(phone_numbers, sent_to):
