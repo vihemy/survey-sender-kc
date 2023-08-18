@@ -141,7 +141,7 @@ def send_surveys(url, phone_numbers: list):
 
         except Exception as e:
             print(
-                f"\nVed sending til nummer: {phone_number.number()} er følgende fejl er opstået {e} \n Fortsætter til næste nummer")
+                f"\nVed sending til nummer: {phone_number.number()} er følgende fejl er opstået: \n {e} \n Fortsætter til næste nummer")
             continue
 
     print_report(phone_numbers, sent_to)
