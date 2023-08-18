@@ -16,9 +16,10 @@ def default_excel_path():
     if getattr(sys, 'frozen', False):
         # If the application is run as a -onefile (pyinstaller) the path is different than if run as a script
         application_directory = os.path.dirname(sys.executable)
-    # If not the application is run as onefile (pyinstaller) the path is set to the directory of this script
+    # If not the application is run as onefile (pyinstaller) the path is set to the parent directory of this script
     else:
-        application_directory = os.path.dirname(os.path.abspath(__file__))
+        application_directory = os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__)))
 
     excel_file = os.path.join(
         application_directory, "Liste til telefonnumre - Tilfredshedsundersøgelse.xlsx")
