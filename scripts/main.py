@@ -47,7 +47,7 @@ layout = [
 
 # Create the window with PySimpleGUI
 # finalize=True makes it possible to call follow function when window is opened
-window = sg.Window('Survey Sender v.2', layout, finalize=True)
+window = sg.Window('Survey Sender v.2.5', layout, finalize=True)
 printer.print_greeting()
 
 # Event loop to process events and update window
