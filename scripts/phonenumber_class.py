@@ -40,7 +40,7 @@ class PhoneNumber:
     def national_number(self):
         """Return national number as int (e.g. 12345678)"""
         # If country code is noted (signified by use of +), country code is stripped, leaving only national number - OBS! THIS IS STRING, NOT INT! PLUS-SIGN CAN NOT BE DETECTED IN INT!
-        if '+' in self.number:
+        if self._starts_with_plus(self.number):
             # No need for second argument, as country code is present in i.)
             parsed_number = phonenumbers.parse(self.number, None)
             national_number = parsed_number.national_number
@@ -50,17 +50,24 @@ class PhoneNumber:
             national_number = int(self.number)
         return national_number
 
-    # Gets country code from number. If no country code is present, country code is set to 45 (Denmark)
     def country_code(self):
-        """Return country code as int (e.g. 45)"""
-        if '+' in self.number:
+        """Return country code as int (e.g. 45). If no country code is present, country code is set to 45 (Denmark)"""
+        # if '+' in self.number:
+        if self._starts_with_plus(self.number):
             parsed_number = phonenumbers.parse(self.number, None)
             country_code = parsed_number.country_code
         else:
             country_code = 45
         return country_code
 
-    def survey_language(self):  # Gets survey language from country code
+    def _starts_with_plus(self, number):
+        """Return True if number starts with '+', False if not"""
+        if number[0] == '+':
+            return True
+        else:
+            return False
+
+    def survey_language(self):
         """Return survey language as str (e.g. 'DAN')"""
         if self.country_code() == 45:
             survey_language = 'DAN'
