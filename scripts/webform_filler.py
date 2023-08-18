@@ -16,6 +16,7 @@ import printer
 
 
 def initialize_driver():
+    """Initialize the Firefox driver and return it"""
     # Path to the geckodriver executable
     geckodriver_path = 'path/to/geckodriver'
     # Find the Firefox binary location using the 'shutil' module
@@ -30,10 +31,12 @@ def initialize_driver():
 
 
 def open_webform(driver, url):
-    driver.get(url)  # Open the webform
+    """Open the webform in Firefox"""
+    driver.get(url)
 
 
 def pick_language_button_xpath(phone_number: PhoneNumber):
+    """Return xpath for language button based on Phonenumber instances survey_language."""
     # Selenium uses xpath to find elements in html.
     if not phone_number.survey_language():  # if survey_language is None default to danish
         xpath = '//input[@value="DAN"]'
@@ -43,6 +46,7 @@ def pick_language_button_xpath(phone_number: PhoneNumber):
 
 
 def click_button(driver, xpath, delay):
+    """Click button based on xpath"""
     try:
         element_present = expected_conditions.presence_of_element_located(
             (By.XPATH, xpath))
@@ -57,7 +61,7 @@ def click_button(driver, xpath, delay):
 
 
 def select_country_code_from_dropdown(driver, phone_number: PhoneNumber):
-    # finds dropdown element
+    """Find and select country_code on dropdown."""
     # (does not use Selenium.Select due to custom dropdown)
     dropdown = driver.find_element(By.CLASS_NAME, "cc-picker")
     # Click dropwdown to expand the options
@@ -76,7 +80,7 @@ def select_country_code_from_dropdown(driver, phone_number: PhoneNumber):
 
 
 def insert_number_in_text_field(driver, xpath, phone_number):
-    # Find the text field for phone number and fill it with the phone number
+    """Find text field and insert national number."""
     text_field = driver.find_element(By.XPATH, xpath)
     text_field.clear()  # clear in case of previous input
     # send_keys is Seleniums equivalent of typing in the text field
@@ -84,11 +88,12 @@ def insert_number_in_text_field(driver, xpath, phone_number):
 
 
 def scroll_to_bottom(driver):
-    # scroll to the bottom of screen
+    """Scroll to the bottom of the screen, to make sure proper element is in view (uses javascript)"""
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
 
 def print_report(phone_numbers, sent_to):
+    """Print report of sendings to user."""
     if len(phone_numbers) > len(sent_to):  # if not all numbers were sent
         printer.print_not_all_sent(phone_numbers, sent_to)
     if len(phone_numbers) == len(sent_to):  # if all numbers were sent
@@ -99,6 +104,7 @@ def print_report(phone_numbers, sent_to):
 
 # CALLS ALL FUNCTIONS ABOVE
 def send_surveys(url, phone_numbers: list):
+    """Send surveys to phone numbers in list"""
     driver = initialize_driver()
     open_webform(driver, url)
     delay = 5  # delay for click_buttonScripts
