@@ -1,6 +1,7 @@
 # External libraries
 import openpyxl
 import re
+from phonenumbers import NumberParseException
 
 # Internal libraries
 from phonenumber_class import PhoneNumber
@@ -47,10 +48,16 @@ def import_numbers_from_excel_as_list(excel_file, first_row, first_col):
             cell = sheet.cell(row, col)
             # if cell.value is not empty and does not contains letters, add as phoenumber-object
             if check_if_cell_content_is_valid(cell):
-                # creates PhoneNumber-object
-                phone_number = PhoneNumber(cell.value)
-                # appends phone_number to list
-                phone_numbers.append(phone_number)
+                try:
+                    # creates PhoneNumber-object
+                    phone_number = PhoneNumber(cell.value)
+                    # appends phone_number to list
+                    phone_numbers.append(phone_number)
+                except NumberParseException:
+                    print(
+                        f"Række {row}, kolonne {col} indeholder ugyldigt telefonnummer. Nummeret er ikke blevet importeret.")
+                    continue
+
     wb.close()  # closes workbook
     printer.print_imported_numbers(phone_numbers)
     return phone_numbers
