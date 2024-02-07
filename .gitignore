@@ -1,6 +1,2 @@
-# Ignore spec-file
-SurveySenderKC.spec
-main.spec
-
-# ignore geckodriver
-/geckodriver.exe
+*
+!scripts/
