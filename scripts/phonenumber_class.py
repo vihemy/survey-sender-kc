@@ -44,7 +44,6 @@ class PhoneNumber:
             self.number = "+" + number[2:]
         else:
             self.number = number
-            
         self.parsed_number = (
             phonenumbers.parse(self.number, None)
             if self.number.startswith("+")
