@@ -43,7 +43,7 @@ def handle_import_event(values):
     """Handle import event to read phone numbers from Excel."""
     try:
         excel_file = values["-FILEPATH-"]
-        phone_numbers = excel_processor.import_numbers_from_excel_as_list(
+        phone_numbers = excel_processor.import_phone_numbers(
             excel_file, first_row, first_column
         )
         return phone_numbers
