@@ -70,3 +70,12 @@ def print_type_error_message():
         "Importfejl",
         "Ingen data importeret. Vælg en excel-fil med gyldigt indhold og prøv igen.",
     )
+
+def print_report(phone_numbers, sent_to):
+    """Print report of sendings to user."""
+    if len(phone_numbers) > len(sent_to):  # if not all numbers were sent
+        print_not_all_sent(phone_numbers, sent_to)
+    if len(phone_numbers) == len(sent_to):  # if all numbers were sent
+        print_all_sent(len(sent_to))
+    else:  # default message
+        print_all_sent(len(sent_to))
