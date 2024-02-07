@@ -4,88 +4,115 @@ import os
 import PySimpleGUI as sg
 
 # Internal libraries
-import phonenumber_extractor
-import webform_filler
+import excel_processor
+import webform_handler
 import printer
 
 # Inspiration = https://realpython.com/pysimplegui-python/
 
 
 def default_excel_path():
-    """Return default path to excel file as str"""
-    if getattr(sys, 'frozen', False):
-        # If the application is run as a -onefile (pyinstaller) the path is different than if run as a script
+    """Return default path to excel file as str."""
+    if getattr(sys, "frozen", False):
         application_directory = os.path.dirname(sys.executable)
-    # If not the application is run as onefile (pyinstaller) the path is set to the parent directory of this script
     else:
         application_directory = os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))
+            os.path.dirname(os.path.abspath(__file__))
+        )
+    return os.path.join(
+        application_directory, "Liste til telefonnumre - Tilfredshedsundersøgelse.xlsx"
+    )
 
-    excel_file = os.path.join(
-        application_directory, "Liste til telefonnumre - Tilfredshedsundersøgelse.xlsx")
-    return excel_file
+
+def create_layout(excel_file):
+    """Create and return the layout for the PySimpleGUI window."""
+    return [
+        [
+            sg.Text("Excel fil sti: "),
+            sg.Input(excel_file, key="-FILEPATH-"),
+            sg.FileBrowse(),
+        ],
+        [sg.Button("Importer", key="-IMPORT-")],
+        [sg.Output(size=(80, 20), key="-OUTPUT-")],
+        [sg.Text("Vælg link:"), sg.Combo(["Test link", "Live link"], key="-COMBO-")],
+        [sg.Button("Send", key="-SEND-"), sg.Button("Exit", key="-EXIT-")],
+    ]
+
+
+def handle_import_event(values):
+    """Handle import event to read phone numbers from Excel."""
+    try:
+        excel_file = values["-FILEPATH-"]
+        phone_numbers = excel_processor.import_numbers_from_excel_as_list(
+            excel_file, first_row, first_column
+        )
+        return phone_numbers
+    except PermissionError:
+        printer.print_permission_error_message()
+    except Exception as e:
+        log_exception(e)
+
+
+def handle_send_event(values, phone_numbers):
+    """Handle the event when the 'Send' button is pressed."""
+    try:
+        url = get_survey_url(values["-COMBO-"])
+        webform_handler.send_surveys(url, phone_numbers)
+    except PermissionError:
+        printer.print_permission_error_message()
+    except TypeError:
+        printer.print_type_error_message()
+    except Exception as e:
+        log_exception(e)
+
+
+def get_survey_url(combo_value):
+    """Returns the appropriate survey URL based on the combo box selection."""
+    if combo_value == "":
+        raise TypeError("Intet link valgt")
+    elif combo_value == "Test link":
+        return "https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1&test=1"
+    elif combo_value == "Live link":
+        return "https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1"
+    else:
+        raise ValueError("Invalid link choice")
+
+
+def log_exception(exception):
+    """Logs the exception details."""
+    exc_type, exc_obj, exc_tb = sys.exc_info()
+    fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+    error_message = (
+        f"DER ER OPSTÅET EN FEJL: {exception}{exc_type}{fname}{exc_tb.tb_lineno}"
+    )
+    print(error_message)
+    # Consider adding logging to a file here
 
 
 # Initialize variables
 excel_file = default_excel_path()
 first_row = 8
 first_column = 1
+phone_numbers = []
 
-# Choose Theme - https://www.geeksforgeeks.org/themes-in-pysimplegui/
-sg.theme('BlueMono')
+# Choose Theme
+sg.theme("BlueMono")
 
 # Create the PySimpleGUI layout
-layout = [
-    [sg.Text('Excel fil sti: '), sg.Input(
-        excel_file, key='-FILEPATH-'), sg.FileBrowse()],
-    [sg.Button('Importer', key="-IMPORT-")],
-    [sg.Output(size=(80, 20), key="-OUTPUT-")],
-    [sg.Text("Vælg link:"), sg.Combo(
-        ["Test link", "Live link"], key="-COMBO-")],
-    [sg.Button('Send', key="-SEND-"), sg.Button('Exit', key="-EXIT-")]
-]
+layout = create_layout(excel_file)
 
 # Create the window with PySimpleGUI
-# finalize=True makes it possible to call follow function when window is opened
-window = sg.Window('Survey Sender v.2.5', layout, finalize=True)
+window = sg.Window("Survey Sender v.2.5", layout, finalize=True)
 printer.print_greeting()
 
 # Event loop to process events and update window
 while True:
     event, values = window.read()
-    # Ends program
     if event == sg.WIN_CLOSED or event == "-EXIT-":
         break
-    # Calls import_and_parse_numbers when button Import is pressed
     elif event == "-IMPORT-":
-        try:
-            excel_file = values['-FILEPATH-']
-            phone_numbers = phonenumber_extractor.import_numbers_from_excel_as_list(
-                excel_file, first_row, first_column)
-        except PermissionError:
-            printer.print_permission_error_message()
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()  # defines exception-information
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(f"An error occurred: {e}{exc_type}{fname}{exc_tb.tb_lineno}")
-
-    # Calls send_surveys-function with updated variables
+        phone_numbers = handle_import_event(values)
     elif event == "-SEND-":
-        try:
-            # checks for selection of combo. Sets url to appropriate choice.
-            if values["-COMBO-"] == '':
-                raise TypeError("Intet link valgt")
-            elif values["-COMBO-"] == "Test link":
-                url = "https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1&test=1"
-            elif values["-COMBO-"] == "Live link":
-                url = "https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1"
-            webform_filler.send_surveys(url, phone_numbers)
-        except PermissionError:
-            printer.print_permission_error_message()
-        except TypeError:
-            printer.print_type_error_message()
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()  # defines exception-information
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(
-                f"DER ER OPSTÅET EN FEJL. SEND ET BILLEDE AF SKÆRMEN OG FØLGENDE FEJLMEDDELELSE TIL VICTOR:\n{e}{exc_type}{fname}{exc_tb.tb_lineno}")
+        handle_send_event(values, phone_numbers)
+
+window.close()
