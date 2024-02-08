@@ -10,6 +10,8 @@ import printer
 
 # Inspiration = https://realpython.com/pysimplegui-python/
 
+FILE_NAME = "Telefonnumre.xlsx"
+
 
 def default_excel_path():
     """Return default path to excel file as str."""
@@ -19,9 +21,7 @@ def default_excel_path():
         application_directory = os.path.dirname(
             os.path.dirname(os.path.abspath(__file__))
         )
-    return os.path.join(
-        application_directory, "Liste til telefonnumre - Tilfredshedsundersøgelse.xlsx"
-    )
+    return os.path.join(application_directory, FILE_NAME)
 
 
 def create_layout(excel_file):
@@ -102,7 +102,7 @@ sg.theme("BlueMono")
 layout = create_layout(excel_file)
 
 # Create the window with PySimpleGUI
-window = sg.Window("Survey Sender v.2.5", layout, finalize=True)
+window = sg.Window("Survey Sender v.3", layout, finalize=True)
 printer.print_greeting()
 
 # Event loop to process events and update window
