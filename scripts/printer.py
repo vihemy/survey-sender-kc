@@ -1,14 +1,16 @@
 DIVIDER = "----------------------------------"
 GREETING_MESSAGE = (
-    "Velkommen til Survey Sender v.2.5.\n\n"
+    "Velkommen til Survey Sender v.3.\n\n"
     "For at sende spørgeskemaer:\n"
-    "1. Vælg excel-filen med telefonnumre fra OneDrive-mappen\n"
-    "2. Vælg link-type (vælg live link, med mindre du tester sending til dit eget nummer)\n"
-    "3. Tryk på Send-knappen\n"
-    "4. Vent på, at programmet har kørt færdig (Hold firefox-vinduet åbent mens det kører)\n"
-    "5. Åbn excel-filen og slet telefonnumrene der er blevet sendt til. \n\n"
-    "Hvis du har spørgsmål, så kontakt Victor på 52 13 72 34. "
-    "Hvis du oplever fejl, så send et billede af fejlmeddelelsen og resten af computerskærmen til Victor på teams eller mail vhm@kattegatcentret.dk"
+    "1. IMPORTER excel-filen med telefonnumre fra OneDrive-mappen\n"
+    "2. VÆLG link-type (vælg live link, med mindre du tester sending til dit eget nummer)\n"
+    "3. SEND på Send-knappen\n"
+    "4. VENT på, at programmet har kørt færdig (Hold firefox-vinduet åbent mens det kører)\n"
+    "5. SLET telefonnumrene fra excel-filen efter de er blevet sendt til. \n\n"
+    "HVIS DU OPLEVER FEJL\n"
+    "1. TAG BILLEDE af fejlen og resten af skærmen\n"
+    "2. KONTAKT  Victor på tlf. 52 13 72 34 eller mail vhm@kattegatcentret.dk. Vedhæft billede.\n"
+    "3. SEND spørgeskemaer til telefonnumrene manuelt via følgende link: https://study.epinionglobal.com/ta_e/kattegatcentret?abs=1&seg=1 (kopier linket ind i browseren)"
 )
 
 
